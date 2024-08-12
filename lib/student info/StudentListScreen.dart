@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // For Firebase Firestore
-import 'package:firebase_core/firebase_core.dart'; // For Firebase initialization
-
-
 
 class StudentListScreen extends StatelessWidget {
   @override
@@ -11,11 +8,16 @@ class StudentListScreen extends StatelessWidget {
       appBar: AppBar(title: Text('Student List')),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('students').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
-          var students = snapshot.data.docs;
+
+          if (!snapshot.hasData || snapshot.data == null) {
+            return Center(child: Text('No data available'));
+          }
+
+          var students = snapshot.data!.docs; // Null check with '!'
           return ListView.builder(
             itemCount: students.length,
             itemBuilder: (context, index) {

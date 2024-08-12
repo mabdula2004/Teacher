@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // For Firebase Firestore
-import 'package:firebase_core/firebase_core.dart'; // For Firebase initialization
 
 class CourseList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('courses').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
-        var courses = snapshot.data.docs;
+
+        if (!snapshot.hasData || snapshot.data == null) {
+          return Center(child: Text('No data available'));
+        }
+
+        var courses = snapshot.data!.docs; // Use '!' to assert non-null
         return ListView.builder(
           itemCount: courses.length,
           itemBuilder: (context, index) {
