@@ -1,90 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // For Firebase Firestore
-import 'package:firebase_core/firebase_core.dart'; // For Firebase initialization
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../course info/CourseList.dart';
 
-// HomeScreen Widget
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin'),
-      ),
-      body: Column(
-        children: [
-          // Row containing ADD and View buttons (ButtonRow1)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/addCourse');
-                },
-                child: Text('ADD'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Handle view action
-                },
-                child: Text('View'),
-              ),
-            ],
+        backgroundColor: Colors.deepPurple,
+        title: Row(
+          children: [
+            Icon(
+              Icons.person,
+              color: Colors.white,
+              size: 28, // Size of the icon
+            ),
+            SizedBox(width: 8), // Space between the icon and the text
+            Text(
+              'Admin',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              // Perform any logout operations here if needed
+
+              // Clear the navigation stack and navigate to the login page
+              Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+            },
+            color: Colors.white,
           ),
-          // Row containing ADD STUDENT and STUDENTS buttons (ButtonRow2)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/addStudent');
-                },
-                child: Text('ADD STUDENT'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/students');
-                },
-                child: Text('STUDENTS'),
-              ),
-            ],
-          ),
-          // CourseList Widget to display courses (CourseList)
-          Expanded(child: CourseList()),
         ],
       ),
-    );
-  }
-}
-
-// CourseList Widget - Displays the list of courses
-class CourseList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('courses').snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (!snapshot.hasData || snapshot.data == null) {
-          return Center(child: Text('No data available'));
-        }
-
-        var courses = snapshot.data!.docs; // Using null check with '!'
-        return ListView.builder(
-          itemCount: courses.length,
-          itemBuilder: (context, index) {
-            var course = courses[index];
-            return ListTile(
-              title: Text(course['name']),
-              subtitle: Text('Week: ${course['week']}'),
-              onTap: () {
-                // Handle course details view
-              },
-            );
-          },
-        );
-      },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Manage Courses and Students',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/addCourse');
+                  },
+                  icon: Icon(Icons.add, color: Colors.white),
+                  label: Text('Add Course', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    backgroundColor: Colors.deepPurple,
+                    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/students');
+                  },
+                  icon: Icon(Icons.people, color: Colors.white),
+                  label: Text('View Students', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    backgroundColor: Colors.deepPurple,
+                    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Divider(),
+            SizedBox(height: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Course List',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Expanded(child: CourseList()),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

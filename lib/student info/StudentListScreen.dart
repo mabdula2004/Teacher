@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // For Firebase Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:student/student info/StudentPerformanceScreen.dart';
 
 class StudentListScreen extends StatelessWidget {
   @override
@@ -26,7 +27,16 @@ class StudentListScreen extends StatelessWidget {
                 title: Text(student['name']),
                 subtitle: Text('Class: ${student['class']}'),
                 onTap: () {
-                  // Navigate to student details page
+                  // Navigate to student performance details page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudentPerformanceScreen(
+                        studentId: student.id,
+                        studentName: student['name'],
+                      ),
+                    ),
+                  );
                 },
               );
             },
