@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:student/home/HomeScreen.dart';
-import 'package:student/registers/RegisterStudentPage.dart';
+
 import 'package:student/registers/RegisterTeacherPage.dart';
 import 'package:student/student%20info/StudentListScreen.dart';
-import 'LoginPage/StudentLoginPage.dart';
+
 import 'course info/AddCourseScreen.dart';
 import 'home/StudentHomeScreen.dart';
 import 'LoginPage/LoginPage.dart';
-import 'LoginPage/TeacherLoginPage.dart';
+import 'package:student/notification/NotificationsPage.dart';
 
 
 void main() async {
@@ -31,10 +31,9 @@ class MyApp extends StatelessWidget {
         '/addCourse': (context) => AddCourseScreen(),
         'Admin':(context) => LoginPage(),
         '/students': (context) => StudentListScreen(),
-        '/loginTeacher': (context) => TeacherLoginPage(),
+        '/notifications': (context) => NotificationsPage(),
         '/registerTeacher': (context) => RegisterTeacherPage(), // Define RegisterTeacherPage route
-        '/registerStudent': (context) => RegisterStudentPage(), // Define RegisterStudentPage route
-        '/loginStudent': (context) => StudentLoginPage(), // Define StudentLoginPage route
+         // Define StudentLoginPage route
         '/login': (context) => LoginPage(),
         '/home': (context) => HomeScreen(),
       },

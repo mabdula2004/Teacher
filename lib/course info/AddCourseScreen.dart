@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // For Firebase Firestore
-import 'package:firebase_core/firebase_core.dart'; // For Firebase initialization
 
 class AddCourseScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -22,7 +21,7 @@ class AddCourseScreen extends StatelessWidget {
                 controller: _nameController,
                 decoration: InputDecoration(labelText: 'Course Name'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) { // Null check added
+                  if (value == null || value.isEmpty) {
                     return 'Please enter a course name';
                   }
                   return null;
@@ -32,7 +31,7 @@ class AddCourseScreen extends StatelessWidget {
                 controller: _weekController,
                 decoration: InputDecoration(labelText: 'Week'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) { // Null check added
+                  if (value == null || value.isEmpty) {
                     return 'Please enter the week';
                   }
                   return null;
@@ -40,9 +39,9 @@ class AddCourseScreen extends StatelessWidget {
               ),
               TextFormField(
                 controller: _topicsController,
-                decoration: InputDecoration(labelText: 'Topics'),
+                decoration: InputDecoration(labelText: 'Topics (comma-separated)'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) { // Null check added
+                  if (value == null || value.isEmpty) {
                     return 'Please enter the topics';
                   }
                   return null;
@@ -50,13 +49,18 @@ class AddCourseScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) { // Null check added
-                    FirebaseFirestore.instance.collection('courses').add({
+                onPressed: () async {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    // Add the course and get the generated DocumentReference
+                    DocumentReference courseRef = await FirebaseFirestore.instance.collection('courses').add({
                       'name': _nameController.text,
                       'week': _weekController.text,
-                      'topics': _topicsController.text.split(','),
+                      'topics': _topicsController.text.split(',').map((e) => e.trim()).toList(),
                     });
+
+                    // Update the course with its generated ID
+                    await courseRef.update({'courseId': courseRef.id});
+
                     Navigator.pop(context);
                   }
                 },

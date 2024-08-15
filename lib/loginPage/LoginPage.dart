@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context) {
           return AlertDialog(
             title: Text('Error'),
-            content: Text('Login failed. Please check your credentials and try again.'),
+            content: Text('Login failed. Please check your email or password and try again.'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -72,9 +72,10 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: 70,),
             Text(
               'Welcome',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center, // Center the text
             ),
             SizedBox(height: 20),
@@ -98,26 +99,23 @@ class _LoginPageState extends State<LoginPage> {
                 textStyle: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/registerTeacher'); // Ensure this route exists
-              },
-              child: Text('Register as Teacher'),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.deepPurple, // Text color
-              ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Already not have an account?', style: TextStyle(color: Colors.red)),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/registerTeacher'); // Ensure this route exists
+                  },
+                  child: Text('Sign up'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.deepPurple, // Text color
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/registerStudent'); // Ensure this route exists
-              },
-              child: Text('Register as Student'),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.deepPurple, // Text color
-              ),
-            ),
+            SizedBox(height: 50),
           ],
         ),
       ),

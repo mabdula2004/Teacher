@@ -5,7 +5,7 @@ class StudentPerformanceScreen extends StatelessWidget {
   final String studentId;
   final String studentName;
 
-  StudentPerformanceScreen({required this.studentId, required this.studentName});
+  StudentPerformanceScreen({required this.studentId, required this.studentName, required  courseId});
 
   @override
   Widget build(BuildContext context) {

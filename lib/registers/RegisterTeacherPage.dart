@@ -88,7 +88,8 @@ class _RegisterTeacherPageState extends State<RegisterTeacherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register as Teacher')),
+      appBar: AppBar(title: Text('Sign up',style: TextStyle(color: Colors.white),),
+        backgroundColor:Colors.deepPurple,),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
