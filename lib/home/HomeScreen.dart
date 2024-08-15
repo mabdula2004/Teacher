@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, size: 40),
+            icon: Icon(Icons.logout, size: 30),
             onPressed: () async {
               await _auth.signOut();
               Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
