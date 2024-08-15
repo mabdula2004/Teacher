@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../course info/CourseList.dart';
 import 'package:student/editinfo/EditUserInfoPage.dart'; // Make sure you create this file for editing user info
 import 'package:student/notification/NotificationsPage.dart';
+import '../course info/courseid_page/CourseIdPage.dart'; // Import CourseIdPage
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -151,6 +153,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   icon: Icon(Icons.people, color: Colors.white),
                   label: Text('View Students', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    backgroundColor: Colors.deepPurple,
+                    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CourseIdPage()),
+                    );
+                  },
+                  icon: Icon(Icons.list, color: Colors.white),
+                  label: Text('View Course IDs', style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     backgroundColor: Colors.deepPurple,

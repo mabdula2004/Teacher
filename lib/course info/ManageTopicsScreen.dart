@@ -83,8 +83,8 @@ class _ManageTopicsScreenState extends State<ManageTopicsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.courseTitle), // Displaying dynamic title
+      appBar: AppBar(backgroundColor: Colors.deepPurple,
+        title: Text(widget.courseTitle,style: TextStyle(color: Colors.white),), // Displaying dynamic title
       ),
       body: Column(
         children: [

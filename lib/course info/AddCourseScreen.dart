@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // For Firebase Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'courseid_page/CourseIdPage.dart'; // Import the CourseIdPage
 
 class AddCourseScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -59,9 +60,20 @@ class AddCourseScreen extends StatelessWidget {
                     });
 
                     // Update the course with its generated ID
-                    await courseRef.update({'courseId': courseRef.id});
+                    String courseId = courseRef.id;
+                    await courseRef.update({'courseId': courseId});
 
-                    Navigator.pop(context);
+                    // Add the courseId to a separate collection for Course IDs
+                    await FirebaseFirestore.instance.collection('courseIds').add({
+                      'name': _nameController.text,
+                      'courseId': courseId,
+                    });
+
+                    // Navigate to CourseIdPage after adding the course
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CourseIdPage()),
+                    );
                   }
                 },
                 child: Text('Add Course'),

@@ -60,6 +60,17 @@ class CourseList extends StatelessWidget {
               onPressed: () async {
                 // Delete the course from Firestore
                 await FirebaseFirestore.instance.collection('courses').doc(courseId).delete();
+
+                // Delete the corresponding courseId from the 'courseIds' collection
+                var courseIdsSnapshot = await FirebaseFirestore.instance
+                    .collection('courseIds')
+                    .where('courseId', isEqualTo: courseId)
+                    .get();
+
+                for (var doc in courseIdsSnapshot.docs) {
+                  await doc.reference.delete();
+                }
+
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: Text('Delete', style: TextStyle(color: Colors.red)),
