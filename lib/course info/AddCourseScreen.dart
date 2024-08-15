@@ -52,28 +52,66 @@ class AddCourseScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState?.validate() ?? false) {
-                    // Add the course and get the generated DocumentReference
-                    DocumentReference courseRef = await FirebaseFirestore.instance.collection('courses').add({
-                      'name': _nameController.text,
-                      'week': _weekController.text,
-                      'topics': _topicsController.text.split(',').map((e) => e.trim()).toList(),
-                    });
+                    try {
+                      // Add the course and get the generated DocumentReference
+                      DocumentReference courseRef = await FirebaseFirestore.instance.collection('courses').add({
+                        'name': _nameController.text,
+                        'week': _weekController.text,
+                        'topics': _topicsController.text.split(',').map((e) => e.trim()).toList(),
+                      });
 
-                    // Update the course with its generated ID
-                    String courseId = courseRef.id;
-                    await courseRef.update({'courseId': courseId});
+                      // Update the course with its generated ID
+                      String courseId = courseRef.id;
+                      await courseRef.update({'courseId': courseId});
 
-                    // Add the courseId to a separate collection for Course IDs
-                    await FirebaseFirestore.instance.collection('courseIds').add({
-                      'name': _nameController.text,
-                      'courseId': courseId,
-                    });
+                      // Add the courseId to a separate collection for Course IDs
+                      await FirebaseFirestore.instance.collection('courseIds').add({
+                        'name': _nameController.text,
+                        'courseId': courseId,
+                      });
 
-                    // Navigate to CourseIdPage after adding the course
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CourseIdPage()),
-                    );
+                      // Show a success dialog
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Success'),
+                            content: Text('Course successfully added!'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Close the dialog
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => CourseIdPage()),
+                                  );
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } catch (e) {
+                      // Handle any errors that occur during the Firestore operations
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Error'),
+                            content: Text('An error occurred while adding the course. Please try again.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Close the dialog
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   }
                 },
                 child: Text('Add Course'),
