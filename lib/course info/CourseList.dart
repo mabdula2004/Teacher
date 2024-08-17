@@ -5,40 +5,63 @@ import 'ManageTopicsScreen.dart';
 class CourseList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('courses').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data == null) {
-          return Center(child: CircularProgressIndicator());
-        }
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // Align content to the left
+          children: [
 
-        var courses = snapshot.data!.docs;
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('courses').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  }
 
-        return ListView.builder(
-          itemCount: courses.length,
-          itemBuilder: (context, index) {
-            var course = courses[index];
-            return ListTile(
-              title: Text(course['name']),
-              subtitle: Text('Week: ${course['week']}'),
-              onLongPress: () {
-                _showDeleteDialog(context, course.id);
-              },
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ManageTopicsScreen(
-                      courseId: course.id,
-                      courseTitle: 'Manage ${course['name']} Topics',
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+                  var courses = snapshot.data!.docs;
+
+                  return ListView.builder(
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) {
+                      var course = courses[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: ListTile(
+                          title: Text(
+                            "${index + 1}. ${course['name']}", // Adding numbering
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic, // Italic font style
+                            ),
+                          ),
+                          subtitle: Text('${course['week']}'),
+                          onLongPress: () {
+                            _showDeleteDialog(context, course.id);
+                          },
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ManageTopicsScreen(
+                                  courseId: course.id,
+                                  courseTitle: 'Manage ${course['name']} Topics',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

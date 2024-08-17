@@ -6,7 +6,6 @@ class AddCourseScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _weekController = TextEditingController();
-  final _topicsController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +37,6 @@ class AddCourseScreen extends StatelessWidget {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _topicsController,
-                decoration: InputDecoration(labelText: 'Topics (comma-separated)'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the topics';
-                  }
-                  return null;
-                },
-              ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
@@ -57,7 +46,6 @@ class AddCourseScreen extends StatelessWidget {
                       DocumentReference courseRef = await FirebaseFirestore.instance.collection('courses').add({
                         'name': _nameController.text,
                         'week': _weekController.text,
-                        'topics': _topicsController.text.split(',').map((e) => e.trim()).toList(),
                       });
 
                       // Update the course with its generated ID

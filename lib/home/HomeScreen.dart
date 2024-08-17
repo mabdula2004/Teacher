@@ -190,14 +190,14 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Course List',
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
-                  Text('To Delete the courses press and hold on "Course"', style: TextStyle(color: Colors.red)),
-                  SizedBox(height: 10),
+                  const Text('To Delete Course "Press and Hold"', style: TextStyle(color: Colors.red)),
+                  const SizedBox(height: 5),
                   Expanded(child: CourseList()),
                 ],
               ),

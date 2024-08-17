@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ManageTopicsScreen extends StatefulWidget {
   final String courseId;
-  final String courseTitle; // New parameter to hold the course title
+  final String courseTitle; // Holds the course title
 
   ManageTopicsScreen({required this.courseId, required this.courseTitle});
 
@@ -52,39 +52,22 @@ class _ManageTopicsScreenState extends State<ManageTopicsScreen> {
           .update({
         'topics': FieldValue.arrayUnion([newTopic]),
       });
-    }
-  }
-
-  void _uploadTopicToStudents() async {
-    final topic = _topicController.text;
-
-    if (topic.isNotEmpty) {
-      // Fetch all students in the course
-      var studentDocs = await FirebaseFirestore.instance
-          .collection('students')
-          .where('courseId', isEqualTo: widget.courseId)
-          .get();
-
-      // Update each student's document
-      for (var doc in studentDocs.docs) {
-        await FirebaseFirestore.instance
-            .collection('students')
-            .doc(doc.id)
-            .update({
-          'topics': FieldValue.arrayUnion([topic]), // Assuming 'topics' field in student document
-        });
-      }
-
-      // Optionally, clear the topic controller
       _topicController.clear();
+      setState(() {
+        _editingTopicId = null;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.deepPurple,
-        title: Text(widget.courseTitle,style: TextStyle(color: Colors.white),), // Displaying dynamic title
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        title: Text(
+          widget.courseTitle,
+          style: TextStyle(color: Colors.white),
+        ), // Displaying dynamic title
       ),
       body: Column(
         children: [
@@ -93,18 +76,12 @@ class _ManageTopicsScreenState extends State<ManageTopicsScreen> {
             decoration: InputDecoration(labelText: 'Add/Edit Topic'),
           ),
           ElevatedButton(
-            onPressed: _editingTopicId == null ? _addTopic : () {
+            onPressed: _editingTopicId == null
+                ? _addTopic
+                : () {
               _editTopic(_editingTopicId!, _topicController.text);
-              setState(() {
-                _editingTopicId = null;
-                _topicController.clear();
-              });
             },
             child: Text(_editingTopicId == null ? 'Add Topic' : 'Update Topic'),
-          ),
-          ElevatedButton(
-            onPressed: _uploadTopicToStudents,
-            child: Text('Upload Topic to Students'),
           ),
           Expanded(
             child: StreamBuilder<DocumentSnapshot>(
