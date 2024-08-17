@@ -29,7 +29,10 @@ class _RegisterTeacherPageState extends State<RegisterTeacherPage> {
         password: _passwordController.text,
       );
 
-      // Save additional user info to Firestore
+      // Send verification email
+      await userCredential.user!.sendEmailVerification();
+
+      // Create user document in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'email': _emailController.text,
         'role': 'teacher',
@@ -37,7 +40,11 @@ class _RegisterTeacherPageState extends State<RegisterTeacherPage> {
       });
 
       // Show success message
-      _showSuccessDialog('Successfully registered!');
+      _showSuccessDialog('A verification email has been sent. Please verify your email before logging in.');
+
+      // Optionally, sign out the user after registration
+      await _auth.signOut();
+
     } catch (e) {
       _showErrorDialog('Registration failed. Please try again.');
       print(e);
@@ -88,8 +95,10 @@ class _RegisterTeacherPageState extends State<RegisterTeacherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign up',style: TextStyle(color: Colors.white),),
-        backgroundColor:Colors.deepPurple,),
+      appBar: AppBar(
+        title: Text('Sign Up', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.deepPurple,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

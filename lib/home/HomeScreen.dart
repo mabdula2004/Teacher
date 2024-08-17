@@ -44,52 +44,71 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           children: [
             Icon(
-              Icons.person,
+              Icons.admin_panel_settings, // Updated icon for teacher management panel
               color: Colors.white,
               size: 28,
             ),
             SizedBox(width: 8),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showEmail = !_showEmail;
-                });
-              },
-              child: Row(
-                children: [
-                  Text(
-                    _teacherName,
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  Icon(
-                    _showEmail ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 130),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => NotificationsPage()),
-                      );
-                    },
-                    child: Icon(Icons.notifications_active, size: 30),
-                  ),
-                ],
-              ),
+            Text(
+              'Teacher Panel',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ],
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.logout, size: 30),
-            onPressed: () async {
-              await _auth.signOut();
-              Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationsPage()),
+              );
             },
-            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Icon(Icons.notifications_active, size: 30, color: Colors.white),
+            ),
           ),
         ],
+      ),
+
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text(_teacherName),
+              accountEmail: Text(_teacherEmail),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Text(
+                  _teacherName.isNotEmpty ? _teacherName[0].toUpperCase() : 'T',
+                  style: TextStyle(fontSize: 40.0),
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.edit),
+              title: Text('Edit User Info'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditUserInfoPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Logout'),
+              onTap: () async {
+                await _auth.signOut();
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+            ),
+          ],
+        ),
       ),
 
       body: Padding(
@@ -106,22 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text(
                       _teacherEmail,
                       style: TextStyle(fontSize: 16, color: Colors.black54),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EditUserInfoPage()),
-                      );
-                    },
-                    child: Text(
-                      'User Info',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
                     ),
                   ),
                   SizedBox(height: 16), // Space between email and next section
@@ -193,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     'Course List',
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
-                  Text('To Delete the courses press and hold on "Course"',style: TextStyle(color: Colors.red),),
+                  Text('To Delete the courses press and hold on "Course"', style: TextStyle(color: Colors.red)),
                   SizedBox(height: 10),
                   Expanded(child: CourseList()),
                 ],

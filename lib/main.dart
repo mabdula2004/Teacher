@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/students': (context) => StudentListScreen(),
         '/notifications': (context) => NotificationsPage(),
         '/registerTeacher': (context) => RegisterTeacherPage(), // Define RegisterTeacherPage route
-         // Define StudentLoginPage route
+
         '/login': (context) => LoginPage(),
         '/home': (context) => HomeScreen(),
       },

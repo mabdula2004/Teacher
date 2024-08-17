@@ -21,8 +21,23 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text,
       );
 
-      // Check user role
+      // Check if the email is verified
+      if (!userCredential.user!.emailVerified) {
+        await _auth.signOut(); // Sign out the user if email is not verified
+        _showErrorDialog('Please verify your email before logging in.');
+        return;
+      }
+
+      // Retrieve the user's document
       DocumentSnapshot userDoc = await _firestore.collection('users').doc(userCredential.user!.uid).get();
+
+      // Check if the document exists
+      if (!userDoc.exists) {
+        _showErrorDialog('User data not found. Please register again.');
+        return;
+      }
+
+      // Get the user's role
       String role = userDoc['role'];
 
       if (role == 'teacher') {
@@ -35,25 +50,28 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print('Error logging in: $e');
-      // Show an error message
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Login failed. Please check your email or password and try again.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      _showErrorDialog('Login failed. Please check your email or password and try again.');
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -103,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Already not have an account?', style: TextStyle(color: Colors.red)),
+                Text('Already have an account?', style: TextStyle(color: Colors.red)),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/registerTeacher'); // Ensure this route exists

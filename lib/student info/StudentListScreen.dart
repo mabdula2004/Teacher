@@ -7,8 +7,11 @@ class StudentListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Student List')),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('students').snapshots(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('courseRequests')
+            .where('status', isEqualTo: 'approved')
+            .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -22,18 +25,14 @@ class StudentListScreen extends StatelessWidget {
           Map<String, List<QueryDocumentSnapshot>> studentsByCourse = {};
           var students = snapshot.data!.docs;
           for (var student in students) {
-            // Safely get the data as a Map
-            Map<String, dynamic> studentData = student.data() as Map<String, dynamic>;
-
-            // Ensure the field exists and is not null
-            String? courseId = studentData['courseId'] as String?;
+            Map<String, dynamic>? studentData = student.data() as Map<String, dynamic>?;
+            String? courseId = studentData?['courseId'] as String?;
             if (courseId != null && courseId.isNotEmpty) {
               if (!studentsByCourse.containsKey(courseId)) {
                 studentsByCourse[courseId] = [];
               }
               studentsByCourse[courseId]!.add(student);
             } else {
-              // Optionally, handle students with missing or empty courseId
               print('Missing or empty courseId for student: ${student.id}');
             }
           }
@@ -51,23 +50,24 @@ class StudentListScreen extends StatelessWidget {
                     if (!courseSnapshot.hasData || courseSnapshot.data == null) {
                       return Text('Course: Unknown');
                     }
-                    var courseData = courseSnapshot.data!.data() as Map<String, dynamic>;
-                    return Text('Course: ${courseData['name']}');
+                    var courseData = courseSnapshot.data!.data() as Map<String, dynamic>?;
+                    return Text('Course: ${courseData?['name'] ?? 'Unknown'}');
                   },
                 ),
                 children: courseStudents.map((student) {
-                  var studentData = student.data() as Map<String, dynamic>;
+                  var studentData = student.data() as Map<String, dynamic>?;
                   return ListTile(
-                    title: Text(studentData['name'] ?? 'Unknown'),
-                    subtitle: Text('Class: ${studentData['class'] ?? 'Unknown'}'),
+                    title: Text(studentData?['studentName'] ?? 'Unknown'),
+                    subtitle: Text(
+                        'Phone: ${studentData?['studentPhone'] ?? 'Unknown'}, Email: ${studentData?['studentEmail'] ?? 'Unknown'}'
+                    ),
                     onTap: () {
-                      // Navigate to student performance details page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => StudentPerformanceScreen(
                             studentId: student.id,
-                            studentName: studentData['name'] ?? 'Unknown',
+                            studentName: studentData?['studentName'] ?? 'Unknown',
                             courseId: courseId,
                           ),
                         ),
